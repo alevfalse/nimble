@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "703960908137",
+    "firebase_url": "https://nimble-15479.firebaseio.com",
+    "project_id": "nimble-15479",
+    "storage_bucket": "nimble-15479.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703960908137:android:5ced688ded069fa077fdf8",
+        "android_client_info": {
+          "package_name": "com.enhanced.nimble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "703960908137-bhk6utn5o1kaaic2lh3cer9a5q23359t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLHrRTCsKXWLJzLsj-LIrUkZ39t3gCk5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "703960908137-bhk6utn5o1kaaic2lh3cer9a5q23359t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
