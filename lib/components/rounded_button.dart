@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/*
+It's a rounded button. That's all.
+ */
 class RoundedButton extends StatelessWidget {
   final String title;
   final Color color;

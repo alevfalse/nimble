@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:nimble/components/message_stream.dart';
 import 'package:nimble/constants.dart';
+import 'package:nimble/screens/welcome_screen.dart';
 
 final _firestore = Firestore.instance;
 FirebaseUser loggedInUser;
@@ -46,7 +48,6 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: null,
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -55,7 +56,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   showSpinner = true;
                 });
                 await _auth.signOut();
-                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, WelcomeScreen.id, (_) => false);
               }),
         ],
         title: Text('⚡️Nimble'),
@@ -72,7 +74,10 @@ class _ChatScreenState extends State<ChatScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              MessagesStream(),
+              MessagesStream(
+                firestore: _firestore,
+                loggedInUser: loggedInUser,
+              ),
               Container(
                 decoration: kMessageContainerDecoration,
                 child: Row(
@@ -122,94 +127,6 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class MessagesStream extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream:
-          _firestore.collection('messages').orderBy('timestamp').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: kPrimaryLightColor,
-            ),
-          );
-        }
-
-        final messages = snapshot.data.documents.reversed;
-        List<MessageBubble> messageBubbles = [];
-        for (var message in messages) {
-          final messageText = message.data['text'];
-          final messageSender = message.data['sender'];
-
-          final messageWidget = MessageBubble(
-            text: messageText ?? '<blank>',
-            sender: messageSender,
-            isMe: messageSender == loggedInUser.email,
-          );
-          messageBubbles.add(messageWidget);
-        }
-
-        return Expanded(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-            children: messageBubbles,
-            reverse: true,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class MessageBubble extends StatelessWidget {
-  final String text;
-  final String sender;
-  final bool isMe;
-
-  const MessageBubble(
-      {@required this.text, @required this.sender, @required this.isMe});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            sender,
-            style: TextStyle(fontSize: 12.0, color: Colors.black54),
-          ),
-          Material(
-            borderRadius: BorderRadius.only(
-              topLeft: isMe ? Radius.circular(30) : Radius.circular(0),
-              topRight: isMe ? Radius.circular(0) : Radius.circular(30),
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
-            ),
-            color: isMe ? kAccentLightColor : Colors.white,
-            elevation: 5.0,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15.0,
-                  color: isMe ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

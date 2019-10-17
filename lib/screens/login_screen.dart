@@ -117,7 +117,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           email: email, password: password);
 
                       if (authResult.user != null) {
-                        Navigator.pushNamed(context, ChatScreen.id);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, ChatScreen.id, (_) => false);
                       } else {
                         showInvalidLoginCredentialsAlert();
                       }
